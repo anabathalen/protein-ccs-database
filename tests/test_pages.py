@@ -9,6 +9,20 @@ from ccsdb import pages
 
 
 class EntryTemplateTests(unittest.TestCase):
+    def test_new_paper_selection_can_defer_sidebar_navigation(self) -> None:
+        state = {"entry_form_generation": 2, "entry_protein": "old draft"}
+        paper = {"id": "paper-1", "doi": "10.1002/example", "title": "Example paper"}
+
+        with patch.object(pages.st, "session_state", state):
+            pages._select_paper(paper, defer_navigation=True)
+
+        self.assertEqual(state["selected_paper"], paper)
+        self.assertEqual(state["entry_doi"], "10.1002/example")
+        self.assertEqual(state["navigation_pending"], "Add entry")
+        self.assertNotIn("navigation", state)
+        self.assertNotIn("entry_protein", state)
+        self.assertEqual(state["entry_form_generation"], 3)
+
     def test_complete_entry_is_loaded_as_a_new_entry_template(self) -> None:
         state = {"entry_form_generation": 3, "entry_protein": "old draft"}
         template = {

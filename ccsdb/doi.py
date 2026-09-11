@@ -19,7 +19,7 @@ def normalize_doi(value: str | None) -> str:
 
 
 def validate_doi(value: str | None) -> str:
-    """Normalize and validate a DOI, raising ValueError for invalid input."""
+    """Normalise and validate a DOI, raising ValueError for invalid input."""
 
     normalized = normalize_doi(value)
     if not normalized or not DOI_PATTERN.fullmatch(normalized):

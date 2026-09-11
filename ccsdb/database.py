@@ -283,6 +283,55 @@ class Database:
             row = connection.execute(statement).mappings().first()
         return dict(row) if row else None
 
+    def create_paper(
+        self,
+        doi_normalized: str,
+        title: str,
+        authors: str = "",
+        journal: str = "",
+        publication_date: str | None = None,
+    ) -> dict[str, Any]:
+        """Add a user-supplied paper that is not in the seed catalogue."""
+
+        doi = doi_normalized.strip().lower()
+        clean_title = title.strip()
+        if not doi:
+            raise ValueError("DOI is required")
+        if not clean_title:
+            raise ValueError("Paper title is required")
+
+        existing = self.find_paper(doi)
+        if existing:
+            return existing
+
+        try:
+            with self.engine.begin() as connection:
+                connection.execute(
+                    insert(papers).values(
+                        id=str(uuid4()),
+                        doi=doi,
+                        doi_normalized=doi,
+                        pmid=None,
+                        title=clean_title,
+                        authors=authors.strip(),
+                        journal=journal.strip(),
+                        publication_date=self._optional_text(publication_date),
+                        publication_type=None,
+                        abstract=None,
+                        source="user_added",
+                    )
+                )
+        except IntegrityError:
+            existing = self.find_paper(doi)
+            if existing:
+                return existing
+            raise ValueError("This paper could not be added") from None
+
+        created = self.find_paper(doi)
+        if not created:
+            raise ValueError("This paper could not be added")
+        return created
+
     def choose_unlogged_paper(self, user_id: str) -> dict[str, Any] | None:
         now = datetime.now(UTC)
         with self.engine.begin() as connection:
@@ -368,7 +417,7 @@ class Database:
         with self.engine.begin() as connection:
             paper_exists = connection.scalar(select(func.count()).select_from(papers).where(papers.c.id == paper_id))
             if not paper_exists:
-                raise ValueError("Select a paper from the catalogue before submitting")
+                raise ValueError("Select or add a paper before submitting")
             connection.execute(insert(entries).values(**values))
             connection.execute(
                 insert(measurements),
@@ -461,7 +510,7 @@ class Database:
                 select(func.count()).select_from(papers).where(papers.c.id == paper_id)
             )
             if not paper_exists:
-                raise ValueError("Select a paper from the catalogue before saving")
+                raise ValueError("Select or add a paper before saving")
             previous_measurement_count = connection.scalar(
                 select(func.count()).select_from(measurements).where(measurements.c.entry_id == entry_id)
             ) or 0

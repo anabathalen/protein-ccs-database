@@ -1,4 +1,4 @@
-"""Authentication and application-level email authorization."""
+"""Authentication and application-level email authorisation."""
 
 from __future__ import annotations
 

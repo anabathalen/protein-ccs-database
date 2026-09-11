@@ -418,20 +418,30 @@ def render_data(database: Database, user: dict[str, Any]) -> None:
 
 def render_papers(database: Database, user: dict[str, Any]) -> None:
     st.title("Find a paper")
-    st.write("Search by DOI to see whether a paper has already been logged.")
+    st.write("Search by DOI to see whether a paper has already been logged, or add a paper that is not yet in the database.")
     with st.form("doi_search"):
         doi = st.text_input("DOI", placeholder="10.xxxx/...")
         searched = st.form_submit_button("Search", type="primary")
     if searched:
         try:
-            st.session_state["paper_result"] = database.find_paper(validate_doi(doi))
-            st.session_state["paper_search_doi"] = normalize_doi(doi)
+            normalised_doi = validate_doi(doi)
         except ValueError as error:
+            st.session_state.pop("paper_result", None)
+            st.session_state.pop("paper_search_doi", None)
             st.error(str(error))
+        else:
+            st.session_state["paper_result"] = database.find_paper(normalised_doi)
+            st.session_state["paper_search_doi"] = normalised_doi
 
     result = st.session_state.get("paper_result")
-    if searched and result is None:
-        st.warning("That DOI is not in the paper catalogue.")
+    searched_doi = st.session_state.get("paper_search_doi")
+    if searched_doi and result is None:
+        st.warning("That DOI is not yet in the database. Add the paper details below to log data from it.")
+        new_paper = _new_paper_form(database, searched_doi, "paper_search")
+        if new_paper:
+            st.session_state["paper_result"] = new_paper
+            _select_paper(new_paper, defer_navigation=True)
+            st.rerun()
     elif result:
         _paper_card(result)
         if result["entry_count"]:
@@ -469,11 +479,46 @@ def _paper_card(paper: dict[str, Any]) -> None:
     st.code(paper.get("doi") or paper.get("pmid") or "No identifier", language=None)
 
 
-def _select_paper(paper: dict[str, Any]) -> None:
+def _new_paper_form(
+    database: Database,
+    normalised_doi: str,
+    key_prefix: str,
+) -> dict[str, Any] | None:
+    """Collect the minimum metadata needed for a paper outside the catalogue."""
+
+    st.code(normalised_doi, language=None)
+    with st.form(f"{key_prefix}_new_paper"):
+        title = st.text_input("Paper title:*", key=f"{key_prefix}_paper_title")
+        authors = st.text_input("Authors:", key=f"{key_prefix}_paper_authors")
+        journal = st.text_input("Journal:", key=f"{key_prefix}_paper_journal")
+        publication_date = st.text_input(
+            "Publication date:",
+            placeholder="YYYY, YYYY-MM or YYYY-MM-DD",
+            key=f"{key_prefix}_paper_publication_date",
+        )
+        add_paper = st.form_submit_button("Add paper and continue", type="primary")
+
+    if not add_paper:
+        return None
+    try:
+        return database.create_paper(
+            normalised_doi,
+            title,
+            authors,
+            journal,
+            publication_date,
+        )
+    except ValueError as error:
+        st.error(str(error))
+        return None
+
+
+def _select_paper(paper: dict[str, Any], defer_navigation: bool = False) -> None:
     _clear_entry_form_state()
     st.session_state["selected_paper"] = paper
     st.session_state["entry_doi"] = paper.get("doi") or ""
-    st.session_state["navigation"] = "Add entry"
+    navigation_key = "navigation_pending" if defer_navigation else "navigation"
+    st.session_state[navigation_key] = "Add entry"
 
 
 def render_add_entry(database: Database, user: dict[str, Any]) -> None:
@@ -571,7 +616,7 @@ def render_add_entry(database: Database, user: dict[str, Any]) -> None:
             "Paper provided this", key="entry_supplier_details_provided"
         )
         st.divider()
-        uniprot_id = st.text_input("Uniprot ID:", key="entry_uniprot_id")
+        uniprot_id = st.text_input("UniProt ID:", key="entry_uniprot_id")
         uniprot_id_provided = st.checkbox("Paper provided this", key="entry_uniprot_id_provided")
         st.divider()
         pdb_id = st.text_input("PDB ID:", key="entry_pdb_id")
@@ -654,10 +699,12 @@ def render_add_entry(database: Database, user: dict[str, Any]) -> None:
         )
 
     paper = None
+    normalised_doi = None
     doi_error = None
     if doi:
         try:
-            paper = database.find_paper(validate_doi(doi))
+            normalised_doi = validate_doi(doi)
+            paper = database.find_paper(normalised_doi)
         except ValueError as error:
             doi_error = str(error)
 
@@ -666,14 +713,21 @@ def render_add_entry(database: Database, user: dict[str, Any]) -> None:
             _paper_card(paper)
     elif doi_error:
         st.warning(doi_error)
+    elif normalised_doi:
+        st.warning("That DOI is not yet in the database. Add the paper details below before saving this entry.")
+        new_paper = _new_paper_form(database, normalised_doi, "entry")
+        if new_paper:
+            st.session_state["selected_paper"] = new_paper
+            st.session_state["entry_doi"] = new_paper["doi"]
+            st.rerun()
     else:
-        st.info("Enter a DOI from the catalogue, or select a paper on the Papers page.")
+        st.info("Enter a DOI, or select a paper on the Papers page.")
 
     submitted = st.button("Save changes" if editing else "Save entry", type="primary")
 
     if submitted:
         if not paper:
-            st.error(doi_error or "Select a paper from the catalogue before submitting.")
+            st.error(doi_error or "Select or add a paper before submitting.")
             return
         instrument_family = instrument_other if instrument_choice == "Other" else instrument_choice
         drift_gas_calibration = (
@@ -747,7 +801,7 @@ def render_add_entry(database: Database, user: dict[str, Any]) -> None:
 
 
 def render_visualize(database: Database) -> None:
-    st.title("Visualize CCS data")
+    st.title("Visualise CCS data")
     data = database.measurement_data()
     if data.empty:
         st.info("There are no CCS measurements to plot yet.")

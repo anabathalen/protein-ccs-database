@@ -38,6 +38,29 @@ class DatabaseTests(unittest.TestCase):
         self.assertTrue(all(item["source"] == "native_IM_MS_papers_20251215.csv" for item in catalogue))
         self.assertEqual(self.database.counts(), {"papers": 532, "entries": 0, "measurements": 0, "users": 0})
 
+    def test_user_can_add_a_paper_outside_the_seed_catalogue(self) -> None:
+        paper = self.database.create_paper(
+            "10.5555/new-paper",
+            "A newly discovered CCS paper",
+            "A. Researcher; B. Scientist",
+            "Journal of CCS",
+            "2026-09-11",
+        )
+
+        self.assertEqual(paper["doi"], "10.5555/new-paper")
+        self.assertEqual(paper["title"], "A newly discovered CCS paper")
+        self.assertEqual(paper["source"], "user_added")
+        self.assertEqual(paper["entry_count"], 0)
+        self.assertEqual(self.database.counts()["papers"], 533)
+
+        duplicate = self.database.create_paper(
+            "10.5555/new-paper",
+            "This title must not replace the original",
+        )
+        self.assertEqual(duplicate["id"], paper["id"])
+        self.assertEqual(duplicate["title"], "A newly discovered CCS paper")
+        self.assertEqual(self.database.counts()["papers"], 533)
+
     def test_entry_global_ccs_export_and_leaderboard(self) -> None:
         user = self.database.ensure_user("ana@example.org", "Ana")
         self.database.update_nickname(user["id"], "Ana")

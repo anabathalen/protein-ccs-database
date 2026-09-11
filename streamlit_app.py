@@ -89,7 +89,7 @@ def main() -> None:
 
     page = st.sidebar.radio(
         "Navigation",
-        ["Data", "Papers", "Add entry", "Visualize", "Leaderboard"],
+        ["Data", "Papers", "Add entry", "Visualise", "Leaderboard"],
         key="navigation",
     )
     if page == "Data":
@@ -98,7 +98,7 @@ def main() -> None:
         render_papers(database, user)
     elif page == "Add entry":
         render_add_entry(database, user)
-    elif page == "Visualize":
+    elif page == "Visualise":
         render_visualize(database)
     else:
         render_leaderboard(database)

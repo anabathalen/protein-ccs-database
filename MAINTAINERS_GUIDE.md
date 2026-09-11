@@ -12,7 +12,7 @@ This file has been written exclusively by Codex - use with caution.
 | Sign-in and approved-email checks | `ccsdb/auth.py` |
 | Runtime settings and secrets access | `ccsdb/config.py` |
 | Plotly figure and interactive download | `ccsdb/plotting.py` |
-| DOI normalization and validation | `ccsdb/doi.py` |
+| DOI normalisation and validation | `ccsdb/doi.py` |
 | Initial paper catalogue | `data/papers.json` |
 | Streamlit visual/server settings | `.streamlit/config.toml` |
 | Example authentication and database settings | `.streamlit/secrets.toml.example` |

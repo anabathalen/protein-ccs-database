@@ -1,0 +1,17 @@
+.DS_Store
+.env
+.env.*
+.venv/
+node_modules/
+__pycache__/
+*.py[cod]
+*.tsbuildinfo
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.streamlit/secrets.toml
+data/*.db
+data/*.db-shm
+data/*.db-wal
+coverage.xml
+htmlcov/

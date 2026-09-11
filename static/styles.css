@@ -1,0 +1,360 @@
+/* Visual language adapted from the IMSocio reference stylesheet. */
+:root {
+    --cb-blue: #0072B2;
+    --cb-blue-bg: #eaf4fb;
+    --cb-orange: #E69F00;
+    --cb-orange-bg: #fff7e6;
+    --cb-yellow: #F0E442;
+    --cb-yellow-bg: #fffde7;
+    --cb-black: #000000;
+    --cb-grey: #999999;
+    --cb-grey-bg: #f5f5f5;
+    --cb-green: #009E73;
+    --cb-green-bg: #e6f7f2;
+    --cb-pink: #CC79A7;
+    --cb-pink-bg: #fbeaf6;
+    --cb-lightblue: #56B4E9;
+    --cb-lightblue-bg: #eaf6fb;
+    --cb-red: #D55E00;
+    --cb-red-bg: #fbeae6;
+    --ink: #222222;
+}
+
+/* --- Base --- */
+html,
+body,
+.stApp,
+[data-testid="stAppViewContainer"] {
+    background: #ffffff;
+    color: var(--ink);
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+[data-testid="stHeader"] {
+    background: #ffffff;
+    border-bottom: 1px solid #e2e2e2;
+    box-shadow: none;
+    backdrop-filter: none;
+}
+
+[data-testid="stMainBlockContainer"] {
+    max-width: 1440px;
+    /* Keep the first title fully below Streamlit's fixed toolbar. */
+    padding-top: 4.75rem;
+    padding-bottom: 4rem;
+}
+
+p,
+label,
+li,
+input,
+textarea,
+button {
+    letter-spacing: 0.005em;
+}
+
+/* --- Page and section headers --- */
+[data-testid="stMainBlockContainer"] h1 {
+    width: 100%;
+    margin: 0 0 2rem;
+    padding: 1.45rem 1rem 1.25rem;
+    border-top: 4px solid var(--cb-red);
+    border-bottom: 4px solid var(--cb-red);
+    border-radius: 0;
+    background: var(--cb-red-bg);
+    box-shadow: 0 2px 8px rgba(34, 34, 59, 0.06);
+    color: var(--ink);
+    font-size: 2.3rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    line-height: 1.25;
+    text-align: center;
+}
+
+[data-testid="stMainBlockContainer"] h2,
+[data-testid="stMainBlockContainer"] h3 {
+    margin-top: 1.35rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.65rem;
+    border-bottom: 2px solid var(--cb-blue);
+    color: var(--ink);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+/* --- Sidebar --- */
+[data-testid="stSidebar"],
+[data-testid="stSidebar"] > div,
+section[data-testid="stSidebar"] > div {
+    background: var(--cb-pink-bg);
+}
+
+[data-testid="stSidebar"] {
+    border-right: 4px solid var(--cb-pink);
+}
+
+[data-testid="stSidebar"] h3 {
+    margin-top: 0.4rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 2px solid var(--cb-pink);
+    color: var(--ink);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+}
+
+[data-testid="stSidebar"] [data-testid="stCaptionContainer"] {
+    color: #555555;
+}
+
+[data-testid="stSidebar"] [role="radiogroup"] label {
+    margin: 0.1rem 0;
+    padding: 0.2rem 0;
+}
+
+/* --- Buttons --- */
+.stButton > button,
+.stDownloadButton > button,
+[data-testid="stFormSubmitButton"] > button {
+    min-height: 2.75rem;
+    padding: 0.55rem 1.35rem;
+    border: 2px solid var(--cb-blue) !important;
+    border-radius: 0 !important;
+    background: var(--cb-blue-bg) !important;
+    box-shadow: none !important;
+    color: var(--cb-blue) !important;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    transition: background 0.18s ease, color 0.18s ease;
+}
+
+.stButton > button:hover,
+.stDownloadButton > button:hover,
+[data-testid="stFormSubmitButton"] > button:hover {
+    border-color: var(--cb-blue) !important;
+    background: var(--cb-blue) !important;
+    color: #ffffff !important;
+}
+
+.stButton > button:focus-visible,
+.stDownloadButton > button:focus-visible,
+[data-testid="stFormSubmitButton"] > button:focus-visible {
+    outline: 3px solid rgba(0, 114, 178, 0.25);
+    outline-offset: 2px;
+}
+
+.stButton > button:disabled,
+.stDownloadButton > button:disabled {
+    border-color: var(--cb-grey) !important;
+    background: var(--cb-grey-bg) !important;
+    color: #666666 !important;
+}
+
+/* --- Inputs --- */
+[data-testid="stTextInput"] input,
+[data-testid="stTextArea"] textarea,
+[data-testid="stNumberInput"] input,
+[data-testid="stDateInput"] input,
+[data-baseweb="select"] > div,
+[data-baseweb="input"] > div {
+    border-color: var(--cb-grey) !important;
+    border-radius: 0 !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+    color: var(--ink) !important;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+[data-testid="stTextInput"] input:focus,
+[data-testid="stTextArea"] textarea:focus,
+[data-testid="stNumberInput"] input:focus,
+[data-baseweb="select"] > div:focus-within,
+[data-baseweb="input"] > div:focus-within {
+    border-color: var(--cb-blue) !important;
+    box-shadow: 0 0 0 2px rgba(0, 114, 178, 0.13) !important;
+}
+
+[data-testid="stTextInput"] input:disabled,
+[data-testid="stTextArea"] textarea:disabled,
+[data-testid="stNumberInput"] input:disabled,
+[data-baseweb="select"] [aria-disabled="true"] {
+    background: var(--cb-grey-bg) !important;
+}
+
+[data-testid="stCheckbox"] svg,
+[data-testid="stRadio"] svg {
+    color: var(--cb-blue);
+}
+
+/* --- Tabs --- */
+[data-baseweb="tab-list"] {
+    gap: 0.25rem;
+    border-bottom: 2px solid var(--cb-blue);
+}
+
+[data-baseweb="tab"] {
+    min-height: 3rem;
+    padding: 0.65rem 1rem;
+    border-radius: 0 !important;
+    background: var(--cb-grey-bg);
+    color: var(--ink);
+    font-weight: 600;
+}
+
+[data-baseweb="tab"][aria-selected="true"] {
+    background: var(--cb-blue-bg);
+    color: var(--cb-blue);
+}
+
+[data-baseweb="tab-highlight"] {
+    background-color: var(--cb-blue) !important;
+}
+
+/* --- Expanders and bordered form sections --- */
+[data-testid="stExpander"] {
+    overflow: hidden;
+    border: 1px solid var(--cb-grey) !important;
+    border-radius: 0 !important;
+    background: #ffffff;
+    box-shadow: none;
+}
+
+[data-testid="stExpander"] details > summary {
+    border-top: 2px solid var(--cb-lightblue);
+    border-bottom: 2px solid var(--cb-grey);
+    border-radius: 0;
+    background: var(--cb-grey-bg);
+    color: var(--ink);
+    font-size: 1.02rem;
+    font-weight: 600;
+}
+
+[data-testid="stVerticalBlockBorderWrapper"] {
+    border-color: var(--cb-grey) !important;
+    border-radius: 0 !important;
+    background: var(--cb-grey-bg);
+    box-shadow: none;
+}
+
+/* --- Messages and cards --- */
+[data-testid="stAlert"],
+[data-baseweb="notification"] {
+    border-radius: 0 !important;
+    box-shadow: 0 2px 8px rgba(34, 34, 59, 0.06);
+}
+
+[data-testid="stAlert"] {
+    border-left-width: 4px;
+    border-right-width: 4px;
+}
+
+.info-card,
+.success-card,
+.warning-card,
+.error-card,
+.protein-card {
+    margin: 1.5rem 0;
+    padding: 1.3rem 1rem;
+    border-radius: 0;
+    box-shadow: 0 2px 8px rgba(34, 34, 59, 0.06);
+    color: var(--ink);
+    font-size: 1.05rem;
+}
+
+.info-card,
+.success-card {
+    border: 1px solid var(--cb-green);
+    border-right-width: 4px;
+    border-left-width: 4px;
+    background: var(--cb-green-bg);
+}
+
+.warning-card {
+    border: 1px solid var(--cb-orange);
+    border-right-width: 4px;
+    border-left-width: 4px;
+    background: var(--cb-orange-bg);
+}
+
+.error-card {
+    border: 1px solid var(--cb-red);
+    border-right-width: 4px;
+    border-left-width: 4px;
+    background: var(--cb-red-bg);
+}
+
+.protein-card {
+    border: 1px solid var(--cb-lightblue);
+    background: var(--cb-lightblue-bg);
+}
+
+/* --- Tables and editors --- */
+[data-testid="stDataFrame"],
+[data-testid="stDataEditor"] {
+    overflow: hidden;
+    border: 1px solid var(--cb-grey);
+    border-radius: 0 !important;
+    background: #ffffff;
+    box-shadow: none;
+}
+
+[data-testid="stDataFrame"] canvas,
+[data-testid="stDataEditor"] canvas {
+    border-radius: 0 !important;
+}
+
+/* --- Metrics, code and dividers --- */
+[data-testid="stMetric"] {
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--cb-orange);
+    border-radius: 0;
+    background: var(--cb-yellow-bg);
+}
+
+[data-testid="stCode"] {
+    border-left: 4px solid var(--cb-lightblue);
+    border-radius: 0;
+    background: var(--cb-lightblue-bg);
+}
+
+hr {
+    height: 2px !important;
+    margin: 2rem 0 !important;
+    border: 0 !important;
+    background: var(--cb-grey) !important;
+}
+
+/* --- Links and keyboard focus --- */
+a {
+    color: var(--cb-blue);
+}
+
+a:hover {
+    color: #004f7c;
+}
+
+:focus-visible {
+    outline-color: var(--cb-blue);
+}
+
+#MainMenu,
+footer {
+    visibility: hidden;
+}
+
+@media (max-width: 768px) {
+    [data-testid="stMainBlockContainer"] {
+        padding-top: 4.25rem;
+    }
+
+    [data-testid="stMainBlockContainer"] h1 {
+        padding: 1rem 0.75rem;
+        font-size: 1.8rem;
+    }
+
+    [data-baseweb="tab"] {
+        padding: 0.55rem 0.65rem;
+        font-size: 0.9rem;
+    }
+}

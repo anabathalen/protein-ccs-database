@@ -13,6 +13,7 @@ from ccsdb.database import Database
 from ccsdb.pages import (
     render_add_entry,
     render_data,
+    render_instructions,
     render_leaderboard,
     render_papers,
     render_visualize,
@@ -89,9 +90,10 @@ def main() -> None:
 
     page = st.sidebar.radio(
         "Navigation",
-        ["Data", "Papers", "Add entry", "Visualise", "Leaderboard"],
+        ["Data", "Papers", "Add entry", "Visualise", "Leaderboard", "Instructions"],
         key="navigation",
     )
+    
     if page == "Data":
         render_data(database, user)
     elif page == "Papers":
@@ -100,8 +102,10 @@ def main() -> None:
         render_add_entry(database, user)
     elif page == "Visualise":
         render_visualize(database)
-    else:
+    elif page == "Leaderboard":
         render_leaderboard(database)
+    elif page == "Instructions":
+        render_instructions()
 
 
 if __name__ == "__main__":

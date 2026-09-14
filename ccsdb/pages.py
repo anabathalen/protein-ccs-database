@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 import pandas as pd
@@ -858,3 +859,14 @@ def render_leaderboard(database: Database) -> None:
         ),
         width="stretch",
     )
+
+def render_instructions() -> None:
+    """Display the instructions stored in INSTRUCTIONS.md."""
+    instructions_path = Path(__file__).resolve().parent.parent / "INSTRUCTIONS.md"
+
+    st.title("Instructions")
+
+    if instructions_path.exists():
+        st.markdown(instructions_path.read_text(encoding="utf-8"))
+    else:
+        st.info("Instructions have not been added yet.")

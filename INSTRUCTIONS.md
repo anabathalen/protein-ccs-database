@@ -1,4 +1,4 @@
-# How to log CCS values for a paper:
+## How to log CCS values for a paper:
 
 1. Go to the 'papers' tab
   - if you have a paper in mind, search its DOI to check if it already exists in the database
